@@ -1,15 +1,22 @@
+using DecoratorDemo.WebApi.Decorators;
+using DecoratorDemo.WebApi.Interfaces;
+using DecoratorDemo.WebApi.Repository;
+using DecoratorDemo.WebApi.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddKeyedSingleton<IUserService, UserService>("deepest-implementation");
+builder.Services.AddKeyedSingleton<IUserService, FirstUserServiceDacorator>("first-layer-decorator");
+builder.Services.AddKeyedSingleton<IUserService, SecondUserServiceDecorator>("second-layer-decorator");
+
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
